@@ -10,7 +10,7 @@ import UIKit
 class MarcasServices{
     var marcas = [Marca]()
     func getMarcas(onCompletion:@escaping ([Marca]) -> ()) {
-        DataSource().apiData(marca: "", modelo: "", tipo: ""){ (list) in
+        DataSource().apiData(dataTypeApi: .Marca, marca: "", modelo: "", tipo: ""){ (list) in
             for marcaList in list!  {
                  let marca = Marca()
                 for (key,value) in marcaList {

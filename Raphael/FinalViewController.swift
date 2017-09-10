@@ -25,21 +25,35 @@ class FinalViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
-        iniCommon()
         self.title = tipo.name_type
+        loadCarros()
+    }
+    func loadCarros(){
+        CarServices().getCar(marca: String(marca.id_brand), modelo: modelo.id_model, tipo: tipo.id_type){
+            self.carro = $0.first
+            DispatchQueue.main.async {
+                self.iniCommon()
+            }
+        }
     }
     func iniCommon(){
-        self.lblName.text = "Nome: \(carro.name_car!)"
-        self.lblMarca.text = "Marca: \(marca.name_brand!)"
-        self.lblCombustivel.text = "Marca: \(carro.fuel_car!)"
-        
+        if let name = self.carro.name {
+            self.lblName.text = "Nome: \(name)"
+        }
+        if let name_brand = self.marca.name_brand {
+            self.lblMarca.text = "Marca: \(name_brand)"
+        }
+        if let carro_year = self.carro.year {
+            self.lblAno.text = "Ano: \(carro_year)"
+        }
+        if let carro_vehicle = self.carro.vehicle {
+            self.lblVeiculo.text = "Vaiculo: \(carro_vehicle)"
+        }
+        if let carro_fuel = self.carro.fuel {
+            self.lblCombustivel.text = "Combustivel: \(carro_fuel)"
+        }
+        if let carro_price = self.carro.price {
+            self.lblPreco.text = "Preço: \(carro_price)"
+        }
     }
-
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-        
-    }
-
-
 }

@@ -8,13 +8,13 @@
 
 import Foundation
 class Carro{
-    var id_car: String!
-    var year_model: String!
-    var name_car: String!
-    var name_brand: String!
-    var vehicle_car: String!
-    var price_car: String!
-    var fuel_car: String!
-    var reference_car: String!
-    var fipe_car: String!
+    var id: String!
+    var year: String!
+    var name: String!
+    var brand: String!
+    var vehicle: String!
+    var price: String!
+    var fuel: String!
+    var reference: String!
+    var fipe: String!
 }

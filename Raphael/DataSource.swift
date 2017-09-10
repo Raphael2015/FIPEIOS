@@ -5,12 +5,18 @@
 //  Created by Raphael Higashi Silva on 25/08/17.
 //  Copyright © 2017 Raphael Higashi Silva. All rights reserved.
 //
+enum DataTypeApi {
+    case Marca
+    case Modelo
+    case Tipo
+    case Detalhe
+}
 
 import Foundation
 class DataSource{
     
     var basePath: String = ""
-
+    
     let configuration: URLSessionConfiguration = {
         let config = URLSessionConfiguration.default
         
@@ -22,18 +28,25 @@ class DataSource{
         return config
     }()
     
+    func responseArray(data: Data) ->  [String: Any] {
+        return try! JSONSerialization.jsonObject(with: data, options: JSONSerialization.ReadingOptions()) as! [String: Any]
+    }
     
-    func apiData(marca: String, modelo: String, tipo: String, onCompletion: @escaping ([[String:Any]]?) -> Void){
-        if(marca == ""){
+    func apiData(dataTypeApi: DataTypeApi, marca: String, modelo: String, tipo: String, onCompletion: @escaping ([[String:Any]]?) -> Void){
+        
+        if dataTypeApi == .Marca {
             basePath = "https://fipeapi.appspot.com/api/1/carros/marcas.json"
-        }else if(modelo == ""){
-            basePath = "https://fipeapi.appspot.com/api/1/carros/veiculos/\(marca).json"
-        }else if(modelo != "" && marca != ""){
-            basePath = "https://fipeapi.appspot.com/api/1/carros/veiculo/\(marca)/\(modelo).json"
-        }else if(modelo != "" && marca != "" && tipo != ""){
-            basePath = "https://fipeapi.appspot.com/api/1/carros/veiculo/\(tipo)/\(marca)/\(modelo).json"
         }
-
+        if dataTypeApi == .Modelo {
+            basePath = "https://fipeapi.appspot.com/api/1/carros/veiculos/\(marca).json"
+        }
+        if dataTypeApi == .Tipo {
+            basePath = "https://fipeapi.appspot.com/api/1/carros/veiculo/\(marca)/\(modelo).json"
+        }
+        if dataTypeApi == .Detalhe {
+            basePath = "http://fipeapi.appspot.com/api/1/carros/veiculo/\(marca)/\(modelo)/\(tipo).json"
+        }
+        
         let session = URLSession(configuration: configuration)
         
         guard let url = URL(string: basePath) else {
@@ -55,14 +68,22 @@ class DataSource{
                         onCompletion(nil)
                         return
                     }
+                    var response = [[String: Any]]()
                     
-                    let json = try! JSONSerialization.jsonObject(with: data, options: JSONSerialization.ReadingOptions()) as! [[String: Any]]
-                    
-                    onCompletion(json)
-                    
+                    if dataTypeApi != .Detalhe {
+                        do {
+                            try response = JSONSerialization.jsonObject(with: data,
+                                                                        options: JSONSerialization.ReadingOptions()) as! [[String: Any]]
+                        } catch {
+                            response = [self.responseArray(data: data)]
+                        }
+                    } else {
+                        response = [self.responseArray(data: data)]
+                    }
+                    onCompletion(response)
                 }
             }
             }.resume()
     }
-
+    
 }

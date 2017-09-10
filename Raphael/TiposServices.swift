@@ -10,7 +10,7 @@ import UIKit
 class TiposServices{
     var tipos = [Tipo]()
     func getTipos( marca:String, modelo:String, onCompletion:@escaping ([Tipo]) -> ()) {
-        DataSource().apiData(marca: marca, modelo: modelo, tipo: ""){ (list) in
+        DataSource().apiData(dataTypeApi: .Tipo, marca: marca, modelo: modelo, tipo: ""){ (list) in
             for tipoList in list! {
                 let tipo = Tipo()
                 for (key,value) in tipoList {
